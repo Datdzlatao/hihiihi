@@ -18,7 +18,9 @@ $Build  = "$Root\build-android-arm64"
 $JniDir = "$Root\android\app\src\main\jniLibs\arm64-v8a"
 $Strip  = "$Ndk\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-strip.exe"
 $LibCxx = "$Ndk\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\lib\aarch64-linux-android\libc++_shared.so"
-$env:PATH = "$CMake;$Ninja;$env:PATH"
+# Ninja must come first: the SDK's cmake/bin ships an older ninja whose log format differs,
+# and alternating between the two discards the build log and forces a full rebuild.
+$env:PATH = "$Ninja;$CMake;$env:PATH"
 if (-not $env:JAVA_HOME) { $env:JAVA_HOME = "C:\Program Files\Android\Android Studio2\jbr" }
 
 if (-not (Test-Path "$Build\build.ninja")) {
