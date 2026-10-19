@@ -14,6 +14,7 @@ $Sdk    = if ($env:ANDROID_SDK_ROOT) { $env:ANDROID_SDK_ROOT } else { "$env:LOCA
 $Ndk    = "$Sdk\ndk\28.2.13676358"
 $CMake  = "$Sdk\cmake\3.31.6\bin"
 $Ninja  = if ($env:CAPY_NINJA_DIR) { $env:CAPY_NINJA_DIR } else { "$env:LOCALAPPDATA\Python\pythoncore-3.14-64\Scripts" }
+$Git    = "$env:ProgramFiles\Git\cmd\git.exe"
 $Build  = "$Root\build-android-arm64"
 $JniDir = "$Root\android\app\src\main\jniLibs\arm64-v8a"
 $Strip  = "$Ndk\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-strip.exe"
@@ -25,15 +26,24 @@ if (-not $env:JAVA_HOME) { $env:JAVA_HOME = "C:\Program Files\Android\Android St
 
 if (-not (Test-Path "$Build\build.ninja")) {
     Write-Host "== Configuring native build"
-    & cmake -S "$Root\core" -B $Build -G Ninja `
+    $FetchSources = @()
+    if ($env:CAPY_FETCH_DEPS_ROOT) {
+        foreach ($Name in @('opus', 'xbyak', 'zydis', 'zstd', 'zarchive_source')) {
+            $FetchSources += "-DFETCHCONTENT_SOURCE_DIR_$($Name.ToUpper())=$env:CAPY_FETCH_DEPS_ROOT\$Name-src"
+        }
+    }
+    if ($env:CAPY_FFMPEG_PREBUILT_DIR) {
+        $FetchSources += "-DFFMPEG_PREBUILT_DIR=$env:CAPY_FFMPEG_PREBUILT_DIR"
+    }
+    & "$CMake\cmake.exe" -S "$Root\core" -B $Build -G Ninja `
         "-DCMAKE_TOOLCHAIN_FILE=$Ndk\build\cmake\android.toolchain.cmake" `
         -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-31 -DCMAKE_BUILD_TYPE=Release `
-        -DKYTY_BUILD_LAUNCHER=OFF
+        -DKYTY_BUILD_LAUNCHER=OFF "-DGIT_EXECUTABLE=$Git" $FetchSources
     if ($LASTEXITCODE) { throw "cmake configure failed" }
 }
 
 Write-Host "== Building libcapyps5.so"
-& ninja -C $Build capyps5
+& "$Ninja\ninja.exe" -C $Build capyps5
 if ($LASTEXITCODE) { throw "native build failed" }
 
 # Debug info makes the library ~280 MB; keep the symbol table for readable tombstones.
