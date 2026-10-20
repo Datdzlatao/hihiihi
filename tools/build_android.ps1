@@ -51,6 +51,12 @@ New-Item -ItemType Directory -Force $JniDir | Out-Null
 & $Strip --strip-debug -o "$JniDir\libcapyps5.so" "$Build\libcapyps5.so"
 if ($LASTEXITCODE) { throw "strip failed" }
 Copy-Item $LibCxx "$JniDir\libc++_shared.so" -Force
+# libadrenotools hooks must sit in nativeLibraryDir to load custom GPU drivers.
+foreach ($Hook in @('main_hook', 'file_redirect_hook', 'gsl_alloc_hook', 'hook_impl')) {
+    $HookLib = Get-ChildItem -Path $Build -Recurse -Filter "lib$Hook.so" | Select-Object -First 1
+    if (-not $HookLib) { throw "missing lib$Hook.so" }
+    & $Strip --strip-debug -o "$JniDir\lib$Hook.so" $HookLib.FullName
+}
 
 Write-Host "== Packaging APK"
 Push-Location "$Root\android"
