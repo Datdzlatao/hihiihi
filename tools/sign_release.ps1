@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2026 CapyPS5 Project
+# SPDX-License-Identifier: GPL-2.0-only
+
 # Builds the release APK and signs it with the release key (the same key as Lemon).
 #
 #   powershell -ExecutionPolicy Bypass -File tools\sign_release.ps1

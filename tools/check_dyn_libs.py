@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2026 CapyPS5 Project
+# SPDX-License-Identifier: GPL-2.0-only
+
 import os, re, struct
 
 path = r"C:\Users\LeYJa\Downloads\Dead.Cells.PS5-DUPLEX\Dead.Cells.PS5-DUPLEX\PPSA15552-app0\eboot.bin"

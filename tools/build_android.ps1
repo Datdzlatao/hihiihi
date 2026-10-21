@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2026 CapyPS5 Project
+# SPDX-License-Identifier: GPL-2.0-only
+
 # Builds libcapyps5.so, packages the debug APK and installs it on the device.
 #
 #   powershell -ExecutionPolicy Bypass -File tools\build_android.ps1 [-NoInstall] [-Device 282f344c]

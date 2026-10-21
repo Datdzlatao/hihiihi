@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2026 CapyPS5 Project
+# SPDX-License-Identifier: GPL-2.0-only
+
 import os, re, struct
 
 registered_nids = set()

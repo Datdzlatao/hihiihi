@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2026 CapyPS5 Project
+# SPDX-License-Identifier: GPL-2.0-only
+
 """Measures frame-to-frame flicker on the device screen.
 
 Captures a burst of screenshots over adb and reports how many pixels toggle between
